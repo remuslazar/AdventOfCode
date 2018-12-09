@@ -21,7 +21,26 @@ struct LicenceFile {
     /// - Parameter storage
     /// - Returns: sum of the metadata entries
     private func calculateChecksum(storage: inout [Int]) -> Int {
-        return 1 // TODO: implementation
+        struct Header {
+            let childNodesCount: Int
+            let metadataEntriesCount: Int
+        }
+
+        var checksum = 0
+
+        let header = Header(childNodesCount: storage.removeFirst(), metadataEntriesCount: storage.removeFirst())
+
+        // Zero or more child nodes (as specified in the header).
+        for _ in 0..<header.childNodesCount {
+            checksum += calculateChecksum(storage: &storage)
+        }
+
+        // One or more metadata entries (as specified in the header).
+        for _ in 0..<header.metadataEntriesCount {
+            checksum += storage.removeFirst()
+        }
+
+        return checksum
     }
 }
 
@@ -34,5 +53,7 @@ let storage = data
     .map { Int($0)! }
 
 let licenceFile = LicenceFile(storage: storage)
-licenceFile.checksum
+let checksum = licenceFile.checksum
+
+print("Checksum: \(checksum)")
 
