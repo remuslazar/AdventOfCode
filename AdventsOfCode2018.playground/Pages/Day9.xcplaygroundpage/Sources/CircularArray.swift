@@ -1,12 +1,39 @@
 import Foundation
 
 struct CircularArray<Element> {
-    private var storage: [Element]
-    private var currentIndex: Int
+    
+    private class Container<Element> {
+        let element: Element
+        var next: Container<Element>!
+        var prev: Container<Element>!
+
+        init(element: Element) {
+            self.element = element
+            self.next = self
+            self.prev = self
+        }
+    }
+    
+    private let root: Container<Element>
+    private var capacity: Int
+    private var current: Container<Element>
 
     init(rootElement: Element) {
-        storage = [rootElement]
-        currentIndex = 0
+        root = Container<Element>(element: rootElement)
+        current = self.root
+        capacity = 1
+    }
+    
+    private func getContainer(relativeOffet: Int) -> Container<Element> {
+        var element = current
+        if relativeOffet < 0 {
+            let count = -relativeOffet
+            for _ in 0..<count { element = element.prev }
+        } else if relativeOffet > 0 {
+            let count = relativeOffet
+            for _ in 0..<count { element = element.next }
+        }
+        return element
     }
     
     /// Insert a new element after a specific index. This also sets
@@ -17,10 +44,15 @@ struct CircularArray<Element> {
     ///   - index: the element will be inserted after this index
     mutating func insert(_ element: Element, after index: Int) {
         // calculate the insertion point in the circle
-        let newIndex = (currentIndex + 1) % storage.endIndex + 1
-        // it is ok for newIndex to be equal circle.endIndex. In this case, the new element will be appended to the array
-        storage.insert(element, at: newIndex)
-        currentIndex = newIndex
+        let insertAfter = getContainer(relativeOffet: 1)
+        let new = Container<Element>(element: element)
+        new.prev = insertAfter
+        new.next = insertAfter.next
+
+        insertAfter.next.prev = new
+        insertAfter.next = new
+        current = new
+        capacity += 1
     }
     
     /// Removes the element at the specified index and sets the
@@ -29,32 +61,30 @@ struct CircularArray<Element> {
     /// - Parameter index: index of the element to be removed
     /// - Returns: removed element
     mutating func remove(at index: Int) -> Element {
-        var indexOfTheElementToBeRemoved = (currentIndex + index) % storage.endIndex
-        if (indexOfTheElementToBeRemoved < 0) { indexOfTheElementToBeRemoved += storage.endIndex }
-        let elem = storage.remove(at: indexOfTheElementToBeRemoved)
-        currentIndex = indexOfTheElementToBeRemoved
-        if currentIndex == storage.endIndex {
-            currentIndex = 0
-        }
-        return elem
+        let toRemove = getContainer(relativeOffet: -7)
+        toRemove.prev.next = toRemove.next
+        toRemove.next.prev = toRemove.prev
+        current = toRemove.next
+        capacity -= 1
+        return toRemove.element
     }
     
-    var current: Element {
-        return storage[currentIndex]
+    var currentElement: Element {
+        return current.element
     }
     
 }
 
-extension CircularArray: CustomStringConvertible {
-    var description: String {
-        return storage.enumerated()
-            .map {
-                if $0.offset == currentIndex {
-                    return "(\($0.element))"
-                } else {
-                    return " \($0.element) "
-                }
-            }
-            .joined(separator: " ")
-    }
-}
+//extension CircularArray: CustomStringConvertible {
+//    var description: String {
+//        return storage.enumerated()
+//            .map {
+//                if $0.offset == currentIndex {
+//                    return "(\($0.element))"
+//                } else {
+//                    return " \($0.element) "
+//                }
+//            }
+//            .joined(separator: " ")
+//    }
+//}

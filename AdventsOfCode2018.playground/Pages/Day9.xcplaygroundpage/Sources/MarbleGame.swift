@@ -63,7 +63,7 @@ public struct MarbleGame {
     }
     
     var currentMarble: Marble {
-        return board.current
+        return board.currentElement
     }
     
     private var board: CircularArray<Marble>
