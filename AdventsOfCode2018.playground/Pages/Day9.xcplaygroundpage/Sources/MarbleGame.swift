@@ -6,6 +6,11 @@ public struct MarbleGame {
         let number: Int
     }
     
+    struct Player {
+        var score = 0
+        let number: Int
+    }
+    
     private var pool = MarblePool()
     private struct MarblePool {
         private var currentNumber = 0
@@ -17,7 +22,7 @@ public struct MarbleGame {
     }
 
     public init(numPlayers: Int) {
-        self.numPlayers = numPlayers
+        players = (0..<numPlayers).map { Player(score: 0, number: $0 + 1) }
         circle.append(pool.getNextMarble())
         currentMarbleIndex = 0
     }
@@ -38,22 +43,31 @@ public struct MarbleGame {
     
     private var circle: [Marble] = []
     private var currentMarbleIndex: Int
-    private let numPlayers: Int
-    public var currentPlayer: Int?
+    private let players: [Player]
+    private var currentPlayerIndex: Int?
     
     private mutating func nextPlayer() {
-        // player number starts at 1 and *not* 0
-        currentPlayer = currentPlayer == nil ? 1 : currentPlayer! + 1
-        if currentPlayer! > numPlayers {
-            currentPlayer = 1
+        guard var currentPlayerIndex = currentPlayerIndex else {
+            self.currentPlayerIndex = 0
+            return
         }
+        currentPlayerIndex += 1
+        if currentPlayerIndex == players.endIndex {
+            currentPlayerIndex = 0
+        }
+        self.currentPlayerIndex = currentPlayerIndex
+    }
+    
+    var currentPlayer: Player? {
+        guard let index = currentPlayerIndex else { return nil }
+        return players[index]
     }
 
 }
 
 extension MarbleGame: CustomStringConvertible {
     public var description: String {
-        return "[\(currentPlayer != nil ? String(currentPlayer!) : "-")] "
+        return "[\(currentPlayer != nil ? String(currentPlayer!.number) : "-")] "
             + circle.enumerated()
                 .map {
                     if $0.offset == currentMarbleIndex {
