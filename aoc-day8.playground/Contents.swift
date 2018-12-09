@@ -59,7 +59,35 @@ struct LicenceFile {
     /// - Parameter storage
     /// - Returns: calculated value
     private func calculateValue(storage: inout [Int]) -> Int {
-        return 1
+        let header = Header(storage: &storage)
+        
+        let childNodes: [Int] = (0..<header.childNodesCount).map { _ in
+            return calculateValue(storage: &storage)
+        }
+        let metadataEntries: [Int] = (0..<header.metadataEntriesCount).map { _ in
+            return storage.removeFirst()
+        }
+
+        if childNodes.isEmpty {
+            // If a node has no child nodes, its value is the sum of its metadata entries.
+            return metadataEntries.reduce(0, +)
+        } else {
+            var value = 0
+            metadataEntries.forEach { (entry) in
+                if entry == 0 {
+                    // skip
+                } else {
+                    let index = entry - 1
+                    if index >= childNodes.count {
+                        // If a referenced child node does not exist, that reference is skipped.
+                    } else {
+                        value += childNodes[index]
+                    }
+                }
+            }
+            return value
+        }
+        
     }
 }
 
@@ -75,4 +103,3 @@ let licenceFile = LicenceFile(storage: storage)
 
 print("Checksum: \(licenceFile.checksum)")
 print("Value: \(licenceFile.value)")
-
