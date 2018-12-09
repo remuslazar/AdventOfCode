@@ -2,17 +2,29 @@ import Foundation
 
 struct LicenceFile {
     
-    enum LicenceFileError: Error {
-        case invalid
-    }
-    
+    // MARK: - Public API
     let storage: [Int]
-
+    
     var checksum: Int {
         var storage = self.storage
         return calculateChecksum(storage: &storage)
     }
     
+    var value: Int {
+        var storage = self.storage
+        return calculateValue(storage: &storage)
+    }
+    
+    // MARK: - Private implementation
+    private struct Header {
+        let childNodesCount: Int
+        let metadataEntriesCount: Int
+        init(storage: inout [Int]) {
+            childNodesCount = storage.removeFirst()
+            metadataEntriesCount = storage.removeFirst()
+        }
+    }
+
     /// Calculates the checksum by adding up all metadata entries recursively
     ///
     /// This method mangles the storage parameter, basically removing all "processed" elements
@@ -21,14 +33,10 @@ struct LicenceFile {
     /// - Parameter storage
     /// - Returns: sum of the metadata entries
     private func calculateChecksum(storage: inout [Int]) -> Int {
-        struct Header {
-            let childNodesCount: Int
-            let metadataEntriesCount: Int
-        }
 
         var checksum = 0
 
-        let header = Header(childNodesCount: storage.removeFirst(), metadataEntriesCount: storage.removeFirst())
+        let header = Header(storage: &storage)
 
         // Zero or more child nodes (as specified in the header).
         for _ in 0..<header.childNodesCount {
@@ -42,6 +50,17 @@ struct LicenceFile {
 
         return checksum
     }
+    
+    /// Calculates the value of a node
+    ///
+    /// This method mangles the storage parameter, basically removing all "processed" elements
+    /// by unshifting the data stream accordingly
+    ///
+    /// - Parameter storage
+    /// - Returns: calculated value
+    private func calculateValue(storage: inout [Int]) -> Int {
+        return 1
+    }
 }
 
 let fileURL = Bundle.main.url(forResource: "day8-input", withExtension: "txt")!
@@ -53,7 +72,7 @@ let storage = data
     .map { Int($0)! }
 
 let licenceFile = LicenceFile(storage: storage)
-let checksum = licenceFile.checksum
 
-print("Checksum: \(checksum)")
+print("Checksum: \(licenceFile.checksum)")
+print("Value: \(licenceFile.value)")
 
