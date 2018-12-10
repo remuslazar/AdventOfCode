@@ -61,3 +61,33 @@ extension Display {
         }
     }
 }
+
+extension Display {
+    public func foundMinimumViewportSize(maxSeconds num: Int) -> Int? {
+        var minViewport: Viewport!
+        var display = self // use a copy of self
+        
+        for elapsed in 0...num {
+            if minViewport == nil {
+                minViewport = self.viewport
+            } else {
+                let currentSize = display.viewport.size
+                if currentSize.width < minViewport.size.width && currentSize.height < minViewport.size.height {
+                    minViewport = display.viewport
+                } else {
+                    return elapsed-1
+                }
+            }
+            display.move()
+        }
+        return nil
+    }
+
+    public mutating func advance(by seconds: Int) {
+        for _ in 0..<seconds {
+            self.move()
+        }
+    }
+
+}
+

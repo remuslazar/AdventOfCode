@@ -5,7 +5,7 @@ import Foundation
 // AOC Day 10
 
 // Format; position=< 1,  6> velocity=< 1,  0>
-let fileURL = Bundle.main.url(forResource: "day10-input-test", withExtension: "txt")!
+let fileURL = Bundle.main.url(forResource: "day10-input", withExtension: "txt")!
 
 let data = try! String(contentsOf: fileURL)
 let points = data
@@ -15,12 +15,12 @@ let points = data
 points.count
 
 var display = Display(points: points)
-display.viewport.size
 
-display.move()
-display.move()
-display.move()
-
-display.render(viewport: display.viewport)
+if let seconds = display.foundMinimumViewportSize(maxSeconds: 100000) {
+    print(seconds)
+    display.advance(by: seconds)
+    display.render(viewport: display.viewport)
+}
 
 //: [Next](@next)
+
