@@ -5,14 +5,25 @@ public struct Point {
     public struct Position {
         let x: Int // how far left (negative) or right (positive)
         let y: Int // how far up (negative) or down (positive)
+        init(x: Int, y: Int) {
+            self.x = x
+            self.y = y
+        }
     }
     public struct Velocity {
         // Each second, each point's velocity is added to its position
         let dx: Int
         let dy: Int
     }
-    public var position: Position // current position
+    public let position: Position // current position
     public let velocity: Velocity // velocity
+    
+    var after: Point {
+        let newPosition = Position(x: position.x + velocity.dx,
+                                   y: position.y + velocity.dy)
+        return Point(position: newPosition, velocity: self.velocity)
+    }
+    
 }
 
 extension Point {
