@@ -18,7 +18,7 @@ extension GuardSleepEntry: CustomStringConvertible {
 
 extension GuardSleepEntry {
     var sleepMinutes: Int {
-        return asleepRange.upperBound-asleepRange.lowerBound
+        return asleepRange.upperBound - asleepRange.lowerBound
     }
 }
 
@@ -58,7 +58,9 @@ public extension GuardSleepTable {
             } else if action == "falls asleep" {
                 asleepMinute = minute
             } else if action == "wakes up" {
-                asleepTable.append(GuardSleepEntry(id: guardID!, asleepRange: asleepMinute!..<minute!))
+                let range = asleepMinute!..<minute!
+                assert(!range.isEmpty, "range should not be empty")
+                asleepTable.append(GuardSleepEntry(id: guardID!, asleepRange: range))
             }
             
         }
