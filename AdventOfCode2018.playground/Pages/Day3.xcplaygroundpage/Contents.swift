@@ -15,4 +15,6 @@ let claims = data
 let board = Board(claims: claims)
 
 board.overlapArea
+board.nonOverlapingClaims
+
 //: [Next](@next)
