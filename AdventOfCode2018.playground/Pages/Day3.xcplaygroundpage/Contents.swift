@@ -5,7 +5,7 @@ import Foundation
 // AOC Day 3
 
 // Format; position=< 1,  6> velocity=< 1,  0>
-let fileURL = Bundle.main.url(forResource: "day3-input-test", withExtension: "txt")!
+let fileURL = Bundle.main.url(forResource: "day3-input", withExtension: "txt")!
 
 let data = try! String(contentsOf: fileURL)
 let claims = data
@@ -15,6 +15,4 @@ let claims = data
 let board = Board(claims: claims)
 
 board.overlapArea
-
-
 //: [Next](@next)
