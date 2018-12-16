@@ -12,7 +12,7 @@ public struct Area {
         self.chunks = [[Bool]].init(repeating: [Bool].init(repeating: true, count: x.count), count: y.count)
     }
 
-    public var area: Int {
+    public var size: Int {
         var retVal = 0
         // TODO: refactor it using e.g. reduce
         chunks.forEach { (line) in

@@ -23,8 +23,8 @@ public struct Engine {
             }
             guard area.isFinite else { return Int.min }
             
-            print("Point: \(point), area: \(area.area)")
-            return area.area
+            print("Point: \(point), area: \(area.size)")
+            return area.size
         }
         return distances.max()!
     }
@@ -41,7 +41,7 @@ public struct Engine {
             let distanceToAllPoints = points.map { location.taxicabDistance(from: $0) }.reduce(0, +)
             if !(distanceToAllPoints < maxDistance) { area.exclude(point: location) }
         }
-        return area.area
+        return area.size
     }
 
 }
