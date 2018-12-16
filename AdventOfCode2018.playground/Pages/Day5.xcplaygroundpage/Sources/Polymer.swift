@@ -56,10 +56,30 @@ extension Character {
     func lowercased() -> Character {
         return Character(String(self).lowercased())
     }
+    func uppercased() -> Character {
+        return Character(String(self).uppercased())
+    }
 }
 
 public extension Polymer {
     public var length: Int {
         return units.count
+    }
+}
+
+public extension Polymer {
+
+    /// all units available in the polymer, lowercased
+    public var allUnits: Set<Character> {
+        var allUnits = Set<Character>()
+        units.forEach { allUnits.insert($0.lowercased()) }
+        return allUnits
+    }
+
+    public func polymerByRemoving(unit: Character) -> Polymer {
+        return Polymer(data: self.units
+            .replacingOccurrences(of: String(unit), with: "")
+            .replacingOccurrences(of: String(unit.uppercased()), with: "")
+        )
     }
 }

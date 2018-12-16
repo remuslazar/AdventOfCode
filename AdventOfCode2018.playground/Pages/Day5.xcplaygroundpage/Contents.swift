@@ -13,4 +13,8 @@ let reacted = polymer.react()
 
 reacted.length
 
+// Part 2
+let minLength = polymer.allUnits.map { polymer.polymerByRemoving(unit: $0).react().length }.min()!
+minLength
+
 //: [Next](@next)
