@@ -6,12 +6,11 @@ import Foundation
 
 // Format:
 let fileURL = Bundle.main.url(forResource: "day5-input", withExtension: "txt")!
-let data = try! String(contentsOf: fileURL)
+let data = try! String(contentsOf: fileURL).trimmingCharacters(in: .newlines)
 
 let polymer = Polymer(data: data)
-
 let reacted = polymer.react()
 
-print(reacted)
+reacted.length
 
 //: [Next](@next)
