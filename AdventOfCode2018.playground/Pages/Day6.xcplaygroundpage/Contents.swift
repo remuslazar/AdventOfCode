@@ -12,8 +12,13 @@ let points = Set<Point>(try! String(contentsOf: fileURL)
 
 points.count
 
+//: ## Part 1
+
 //: Loop over each point and calculate the distance to all of the neighbors
 
 Engine.calculateLargestArea(for: points)
+
+//: ## Part 2
+Engine.calculateRegion(near: points, maxDistance: 10000)
 
 //: [Next](@next)

@@ -28,6 +28,21 @@ public struct Engine {
         }
         return distances.max()!
     }
+    
+    /// Calculate the region near all points including all locations with a total distance of less than maxDistance.
+    ///
+    /// - Parameters:
+    ///   - points: points
+    ///   - maxDistance: total distance of less than maxDistance
+    /// - Returns: size
+    static public func calculateRegion(near points: Set<Point>, maxDistance: Int) -> Int {
+        var area = Area(points: points)
+        area.coordinates.forEach { (location) in
+            let distanceToAllPoints = points.map { location.taxicabDistance(from: $0) }.reduce(0, +)
+            if !(distanceToAllPoints < maxDistance) { area.exclude(point: location) }
+        }
+        return area.area
+    }
 
 }
 
