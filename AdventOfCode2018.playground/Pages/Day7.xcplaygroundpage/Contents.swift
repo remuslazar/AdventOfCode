@@ -19,4 +19,7 @@ let data = try! String(contentsOf: fileURL)
 //print(instructions.steps)
 print(instructions.executionOrder().joined())
 
+//print(instructions.doWork(workers: 1, timeOffset: 0))
+print(instructions.doWork(workers: 5, timeOffset: 60))
+
 //: [Next](@next)
